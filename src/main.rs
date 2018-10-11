@@ -1,6 +1,6 @@
-mod lexer;
+mod analysis;
 
-use self::lexer::{Lexer, SyntaxType};
+use self::analysis::{lexer::Lexer, SyntaxType};
 use std::io::{self, Write};
 
 fn main() -> Result<(), io::Error> {
