@@ -6,10 +6,17 @@ pub enum SyntaxType {
   BadToken,
   NumberToken,
   WhitespaceToken,
+
+  // Operators
+  PlusToken,
+  StarToken,
+  SlashToken,
+  OpenParenthesisToken,
+  CloseParenthesisToken,
 }
 
 #[derive(Debug)]
-enum TokenValue<'a> {
+pub enum TokenValue<'a> {
   Integer(i32),
   String(&'a str),
 }
@@ -20,4 +27,20 @@ pub struct SyntaxToken<'a> {
   value: Option<TokenValue<'a>>,
   name: String,
   position: usize,
+}
+
+impl<'a> SyntaxToken<'a> {
+  pub fn new(
+    syntax_type: SyntaxType,
+    value: Option<TokenValue<'a>>,
+    name: String,
+    position: usize,
+  ) -> Self {
+    SyntaxToken {
+      syntax_type,
+      value,
+      name,
+      position,
+    }
+  }
 }

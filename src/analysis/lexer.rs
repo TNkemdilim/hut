@@ -17,7 +17,6 @@ impl<'a> Lexer {
 
   fn current(&'a self) -> Option<&'a char> {
     let i = self.position;
-
     self.text.get(i)
   }
 
@@ -29,12 +28,12 @@ impl<'a> Lexer {
     let current = self.current();
 
     if current.is_none() {
-      return SyntaxToken {
-        syntax_type: SyntaxType::EndOfFileToken,
-        value: None,
-        name: "".to_string(),
-        position: self.position,
-      };
+      return SyntaxToken::new(
+        SyntaxType::EndOfFileToken,
+        None,
+        "".to_string(),
+        self.position,
+      );
     }
 
     let current = current.unwrap();
@@ -55,41 +54,64 @@ impl<'a> Lexer {
           .push(format!("The number {} isn't a valid Int32.", name).to_string());
       }
 
-      return SyntaxToken {
-        syntax_type: SyntaxType::NumberToken,
-        value: Some(TokenValue::Integer(value.unwrap())),
-        position: start,
+      return SyntaxToken::new(
+        SyntaxType::NumberToken,
+        Some(TokenValue::Integer(value.unwrap())),
         name,
-      };
+        start,
+      );
     }
 
     if current.is_whitespace() {
       let start = self.position;
-
       while self.current().is_some() && self.current().unwrap().is_whitespace() {
         self.next()
       }
-
       let name: String = self.text[start..self.position].into_iter().collect();
-      return SyntaxToken {
-        syntax_type: SyntaxType::WhitespaceToken,
-        position: start,
-        value: None,
-        name,
-      };
+
+      return SyntaxToken::new(SyntaxType::WhitespaceToken, None, name, start);
     }
 
-    self.position += 1;
+    if *current == '+' {
+      self.position += 1;
+      return SyntaxToken::new(SyntaxType::PlusToken, None, "+".to_string(), self.position);
+    } else if *current == '-' {
+      self.position += 1;
+      return SyntaxToken::new(SyntaxType::PlusToken, None, "+".to_string(), self.position);
+    } else if *current == '*' {
+      self.position += 1;
+      return SyntaxToken::new(SyntaxType::StarToken, None, "*".to_string(), self.position);
+    } else if *current == '/' {
+      self.position += 1;
+      return SyntaxToken::new(SyntaxType::SlashToken, None, "/".to_string(), self.position);
+    } else if *current == '(' {
+      self.position += 1;
+      return SyntaxToken::new(
+        SyntaxType::OpenParenthesisToken,
+        None,
+        "(".to_string(),
+        self.position,
+      );
+    } else if *current == ')' {
+      self.position += 1;
+      return SyntaxToken::new(
+        SyntaxType::CloseParenthesisToken,
+        None,
+        ")".to_string(),
+        self.position,
+      );
+    }
+
     self.diagonistics.push(format!(
       "ERROR: bad character input: '{}'",
       self.current().unwrap_or(&'\0')
     ));
 
-    return SyntaxToken {
-      syntax_type: SyntaxType::BadToken,
-      value: None,
-      name: "".to_string(),
-      position: self.position - 1,
-    };
+    return SyntaxToken::new(
+      SyntaxType::BadToken,
+      None,
+      "".to_string(),
+      self.position - 1,
+    );
   }
 }
