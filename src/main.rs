@@ -17,7 +17,7 @@ fn main() -> Result<(), io::Error> {
         let mut lexer = Lexer::new(&mut line);
         loop {
             let token = lexer.next_token();
-            println!("{:#?}", token);
+            println!("{:?} {:?}", token.syntax_type, token.name);
 
             match token.syntax_type {
                 SyntaxType::EndOfFileToken => break,

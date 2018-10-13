@@ -25,7 +25,7 @@ pub enum TokenValue<'a> {
 pub struct SyntaxToken<'a> {
   pub syntax_type: SyntaxType,
   value: Option<TokenValue<'a>>,
-  name: String,
+  pub name: String,
   position: usize,
 }
 
@@ -39,6 +39,15 @@ impl<'a> SyntaxToken<'a> {
     SyntaxToken {
       syntax_type,
       value,
+      name,
+      position,
+    }
+  }
+
+  pub fn new_without_value(syntax_type: SyntaxType, name: String, position: usize) -> Self {
+    SyntaxToken {
+      syntax_type,
+      value: None,
       name,
       position,
     }
