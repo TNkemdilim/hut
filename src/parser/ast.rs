@@ -2,15 +2,15 @@ use crate::analysis::Token;
 
 #[derive(Debug)]
 pub enum Syntax {
-	NumberExpression {
-		value: Token,
-	},
+    NumberExpression {
+        value: Token,
+    },
 
-	BinaryExpression {
-		left: Box<Syntax>,
-		op: Token,
-		right: Box<Syntax>,
-	},
+    BinaryExpression {
+        left: Box<Syntax>,
+        op: Token,
+        right: Box<Syntax>,
+    },
 }
 
 // impl Syntax {
