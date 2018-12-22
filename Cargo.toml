@@ -5,3 +5,4 @@ authors = ["Tochukwu Nkemdilim <nkemdilimtochukwu@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+term = "0.4.6"

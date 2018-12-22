@@ -1,28 +1,33 @@
 mod analysis;
+mod parser;
 
-use self::analysis::{lexer::Lexer, SyntaxType};
+use self::parser::Parser;
 use std::io::{self, Write};
+use term;
 
 fn main() -> Result<(), io::Error> {
-    loop {
-        print!("> ");
+	loop {
+        let mut t = term::stdout().unwrap();
+		print!("> ");
         io::stdout().flush().unwrap();
+		
         let mut line = String::new();
-        io::stdin().read_line(&mut line)?;
+		io::stdin().read_line(&mut line)?;
 
-        if line.is_empty() || line == " " {
-            Err(io::Error::new(io::ErrorKind::UnexpectedEof, ""))?;
-        }
+		if line.is_empty() || line == " " {
+			Err(io::Error::new(io::ErrorKind::UnexpectedEof, ""))?;
+		};
 
-        let mut lexer = Lexer::new(&mut line);
-        loop {
-            let token = lexer.next_token();
-            println!("{:?} {:?}", token.syntax_type, token.name);
+		let mut parser = Parser::new(&mut line);
+		println!("{:#?}", parser.parse());
+		println!("\n");
 
-            match token.syntax_type {
-                SyntaxType::EndOfFileToken => break,
-                _ => {}
-            }
-        }
-    }
+        
+		parser.diagonistics.iter().for_each(|s| {
+            t.fg(term::color::RED).unwrap();
+            write!(t, "{:?}\n", s).unwrap();
+		});
+
+        t.reset().unwrap();
+	}
 }

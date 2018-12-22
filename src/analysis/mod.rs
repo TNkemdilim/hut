@@ -1,55 +1,29 @@
-pub mod lexer;
+mod lexer;
+pub(crate) mod symbols;
+mod tokens;
 
-#[derive(Debug)]
-pub enum SyntaxType {
-  EndOfFileToken,
-  BadToken,
-  NumberToken,
-  WhitespaceToken,
+pub(crate) use self::{lexer::Lexer, tokens::*};
+use std::fmt;
 
-  // Operators
-  PlusToken,
-  StarToken,
-  SlashToken,
-  OpenParenthesisToken,
-  CloseParenthesisToken,
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum LexerError {
+	ParseIntegerError { position: usize },
+	InvalidToken { position: usize },
 }
 
-#[derive(Debug)]
-pub enum TokenValue<'a> {
-  Integer(i32),
-  String(&'a str),
-}
+type LexerTokenStream = (Vec<SyntaxToken>, Vec<String>);
 
-#[derive(Debug)]
-pub struct SyntaxToken<'a> {
-  pub syntax_type: SyntaxType,
-  value: Option<TokenValue<'a>>,
-  pub name: String,
-  position: usize,
-}
+impl fmt::Display for LexerError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		let messsage = match self {
+			LexerError::ParseIntegerError { position } => {
+				format!("Invalid integer at position: {}", position)
+			}
+			LexerError::InvalidToken { position } => {
+				format!("Invalid token at position: {}", position)
+			}
+		};
 
-impl<'a> SyntaxToken<'a> {
-  pub fn new(
-    syntax_type: SyntaxType,
-    value: Option<TokenValue<'a>>,
-    name: String,
-    position: usize,
-  ) -> Self {
-    SyntaxToken {
-      syntax_type,
-      value,
-      name,
-      position,
-    }
-  }
-
-  pub fn new_without_value(syntax_type: SyntaxType, name: String, position: usize) -> Self {
-    SyntaxToken {
-      syntax_type,
-      value: None,
-      name,
-      position,
-    }
-  }
+		write!(f, "{}", messsage)
+	}
 }
